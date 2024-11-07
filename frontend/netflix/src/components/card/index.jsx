@@ -174,5 +174,4 @@ function CustomCard({ image, videoUrl, id, title, data , fetchMovie}) {
     </Box>
   );
 }
-
 export default CustomCard;

@@ -13,8 +13,6 @@ connectDB();
 const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
-
-
 app.post("/signup", async (req, res) => {
     const { username, password, confirmpassword } = req.body;
     try {
@@ -34,15 +32,12 @@ app.post("/signup", async (req, res) => {
             hashedConfirmPassword:hashedConfirmPassword
         });
         await newUser.save();
-        
         // Generate a JWT token
         const token = jwt.sign(
             { id: newUser._id, username: newUser.username }, 
             process.env.JWT_SECRET, 
             { expiresIn: "1h" }
         );
-        console.log("Token is ", token)
-        
         return res.status(200).json({ 
             message: "Your profile has been created successfully", 
             token   
@@ -53,40 +48,44 @@ app.post("/signup", async (req, res) => {
         return res.status(500).json({ message: "An error occurred" });
     }
 });
-
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
-
     try {
         const user = await Signin.findOne({ username });
         if (!user) {
             return res.status(400).json({ message: "Invalid username or password" });
         }
-
         const isPasswordMatch = await bcrypt.compare(password, user.password);
         if (!isPasswordMatch) {
             return res.status(400).json({ message: "Invalid username or password" });
         }
-
         // Generate a JWT token
         const token = jwt.sign(
             { id: user._id, username: user.username },
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
-
         return res.status(200).json({
             message: "Logged in successfully",
             token,
             id: user._id,
         });
-    } catch (error) {
+    } 
+    catch (error) {
         console.error(error);
         return res.status(500).json({ message: "An error occurred" });
     }
 });
+const tokenBlacklist = new Set();
+app.post("/logout", (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1]; 
 
-
+    if (token) {
+        tokenBlacklist.add(token);  // Add the token to a blacklist set
+        return res.status(200).json({ message: "Logged out successfully" });
+    }
+    return res.status(400).json({ message: "No token provided" });
+});
 
 app.post("/watchlist", async (req, res)=>{
     const {userId, movieName, movieId, movieImage} = req.body;
@@ -104,7 +103,6 @@ app.post("/watchlist", async (req, res)=>{
         console.error(error);
     }
 })
-
 app.get("/watchlist", async (req, res)=>{
     try{
         const watchedMovies = await movieList.find();
@@ -114,7 +112,6 @@ app.get("/watchlist", async (req, res)=>{
         console.error(error);
     }
 })
-
 app.delete("/watchlist/delete", async (req, res) => {
     try {
         const { id } = req.body; 
@@ -133,10 +130,6 @@ app.delete("/watchlist/delete", async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
-
-
-
-
 app.listen(PORT, () => {
   console.log(`Server Running on port ${PORT}`);
 });

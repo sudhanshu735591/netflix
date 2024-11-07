@@ -12,29 +12,46 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-
 const pages = ['Home', 'Movies', 'My List'];
 const settings = ['Logout'];
-
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+// Logout function
+async function logoutFunc() {
+  const token = localStorage.getItem("token"); 
 
+  try {
+      const response = await fetch("http://localhost:5000/logout", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+          },
+      });
+      if (response.ok) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+      } else {
+          const data = await response.json();
+          alert(data.message);
+      }
+  } catch (error) {
+      console.error("Error logging out:", error);
+  }
+}
   return (
     <AppBar position="static" sx={{background:"black"}}>
       <Container maxWidth="xl">
@@ -142,7 +159,7 @@ function Header() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                  <Typography onClick={logoutFunc} sx={{ textAlign: 'center' }}>{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>

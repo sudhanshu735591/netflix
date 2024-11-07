@@ -27,8 +27,6 @@ const Login = () => {
       body: JSON.stringify(data),
     })
     const res = await myData.json();
-    console.log("Response is", res);
-    
     if(res?.message==="Logged in successfully"){
       navigate("/home")
       setFlag(true);
