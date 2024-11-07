@@ -114,7 +114,7 @@ function CustomCard({ image, videoUrl, id, title, data , fetchMovie}) {
               display: 'inline-flex',
             }}
           >
-           {data && data.find((val) => val?.movieId == id) ? (
+           {data && data.find((val) => val?.movieId ==id) ? (
               <CheckCircleOutlineIcon
                 sx={{
                   color: 'black',
