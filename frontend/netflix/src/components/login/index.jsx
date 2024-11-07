@@ -37,6 +37,7 @@ const Login = () => {
       alert("Invalid credentials")
       setFlag(false);
       setLoginId("");
+      navigate("/login")
     }
   }
   return (
