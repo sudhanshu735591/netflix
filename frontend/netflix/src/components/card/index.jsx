@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Box, Dialog, Typography, IconButton, Card } from '@mui/material';
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import UserContext from '../contextapi/usercontext';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 function CustomCard({ image, videoUrl, id, title, data , fetchMovie}) {
   const [open, setOpen] = useState(false);
@@ -52,7 +51,6 @@ function CustomCard({ image, videoUrl, id, title, data , fetchMovie}) {
       console.error("Error deleting movie from watchlist:", error);
     }
 };
-
   return (
     <Box 
       sx={{
@@ -160,7 +158,6 @@ function CustomCard({ image, videoUrl, id, title, data , fetchMovie}) {
           </Box>
         </Box>
       </Card>
-
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <Box sx={{ position: 'relative', padding: '0' }}>
           <iframe

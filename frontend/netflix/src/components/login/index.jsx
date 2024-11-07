@@ -27,7 +27,7 @@ const Login = () => {
       body: JSON.stringify(data),
     })
     const res = await myData.json();
-    if(res?.message==="Login successful"){
+    if(res?.message==="Logged in successfully"){
       navigate("/home")
       setFlag(true);
       setLoginId(res?.data?._id);

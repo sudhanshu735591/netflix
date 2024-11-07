@@ -54,6 +54,37 @@ app.post("/signup", async (req, res) => {
     }
 });
 
+app.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const user = await Signin.findOne({ username });
+        if (!user) {
+            return res.status(400).json({ message: "Invalid username or password" });
+        }
+
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        if (!isPasswordMatch) {
+            return res.status(400).json({ message: "Invalid username or password" });
+        }
+
+        // Generate a JWT token
+        const token = jwt.sign(
+            { id: user._id, username: user.username },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        return res.status(200).json({
+            message: "Logged in successfully",
+            token
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "An error occurred" });
+    }
+});
+
 
 
 app.post("/watchlist", async (req, res)=>{
